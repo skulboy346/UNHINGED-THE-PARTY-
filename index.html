@@ -10,6 +10,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- QR Code Generator Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("S35DUIrMpyDibKjLc");
+        })();
+    </script>
     <style>
         .party-bg {
             background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('IMG-20260815-WA0014.jpg');
@@ -61,7 +68,7 @@
                     <div class="flex justify-between"><span class="text-gray-400">Account Name:</span><span class="font-semibold text-white">Joy Isaac</span></div>
                 </div>
 
-                <!-- Fixed Quick Action Buttons -->
+                <!-- Quick App Launch Buttons -->
                 <div class="grid grid-cols-2 gap-2 pt-1">
                     <button type="button" onclick="openApp('OPay')" class="bg-emerald-600/80 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
                         <span>🟢 Open OPay</span>
@@ -83,7 +90,7 @@
                     <input type="email" id="email" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white placeholder-gray-500" placeholder="seun@example.com">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Phone Number *</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Phone / WhatsApp Number *</label>
                     <input type="tel" id="phone" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white placeholder-gray-500" placeholder="08012345678">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
@@ -192,16 +199,19 @@
     <!-- TICKET PASS MODAL -->
     <div id="ticketModal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="bg-zinc-900 border border-red-500/40 max-w-sm w-full p-6 rounded-3xl shadow-2xl text-center space-y-4 relative">
-            <span class="bg-red-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-widest">Email Preview Simulation</span>
+            <span class="bg-red-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-widest">Digital Access Pass</span>
             <h3 class="font-black italic text-xl text-red-500">UNHINGED ACCESS PASS</h3>
             <div id="modalQrCodeContainer" class="flex justify-center p-4 bg-white rounded-2xl mx-auto w-fit"></div>
             <div class="text-left text-xs space-y-1.5 bg-black/40 p-3.5 rounded-xl border border-white/10 text-gray-300">
                 <p><strong>Ticket ID:</strong> <span id="mTicketId" class="text-white font-mono"></span></p>
                 <p><strong>Name:</strong> <span id="mTicketName" class="text-white font-bold"></span></p>
                 <p><strong>Tier:</strong> <span id="mTicketTier" class="text-yellow-400 font-bold"></span></p>
-                <p><strong>Email Sent To:</strong> <span id="mTicketEmail" class="text-white"></span></p>
+                <p><strong>Email:</strong> <span id="mTicketEmail" class="text-white"></span></p>
             </div>
-            <button onclick="closeModal()" class="w-full bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition">Close Preview</button>
+            <div class="space-y-2">
+                <button id="whatsappBtn" onclick="" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition">💬 Send via WhatsApp</button>
+                <button onclick="closeModal()" class="w-full bg-zinc-700 hover:bg-zinc-600 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition">Close</button>
+            </div>
         </div>
     </div>
 
@@ -239,8 +249,6 @@
         function openApp(appName) {
             navigator.clipboard.writeText("8134250825");
             alert(`Account number copied! Opening ${appName}... Please paste it into your app to transfer.`);
-            
-            // Safe fallback app launcher triggers
             if(appName === 'OPay') {
                 window.location.href = "https://www.opayweb.com";
             } else {
@@ -327,7 +335,7 @@
                 tr.innerHTML = `
                     <td class="py-3 px-3">
                         <strong class="text-white">${t.name}</strong><br>
-                        <span class="text-xs text-gray-400">${t.email}</span>
+                        <span class="text-xs text-gray-400">${t.email} / ${t.phone}</span>
                     </td>
                     <td class="py-3 px-3 text-xs">
                         <span class="text-yellow-400 font-bold">${t.tierName}</span><br>
@@ -344,7 +352,7 @@
                     <td class="py-3 px-3 text-right space-x-1">
                         ${t.status === 'Pending' 
                             ? `<button onclick="approveTicket(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">Approve</button>`
-                            : `<button onclick="previewTicketPass('${t.id}', '${t.name}', '${t.tierName}', '${t.email}')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">View Pass</button>`
+                            : `<button onclick="previewTicketPass('${t.id}', '${t.name}', '${t.tierName}', '${t.email}', '${t.phone}')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">View Pass</button>`
                         }
                     </td>
                 `;
@@ -364,11 +372,25 @@
             const tickets = getDatabase();
             tickets[index].status = 'Approved';
             saveDatabase(tickets);
+
+            const t = tickets[index];
+            emailjs.send("service_fj37dx6", "template_udorxlh", {
+                to_name: t.name,
+                to_email: t.email,
+                ticket_id: t.id,
+                tier: t.tierName,
+                event_date: "Sept 5th, 2026"
+            }).then(function(response) {
+                console.log("Email sent successfully!", response.status);
+            }, function(error) {
+                console.log("Email dispatch failed:", error);
+            });
+
             loadAdminData();
-            alert('Ticket approved! Email simulated and QR pass activated.');
+            alert('Ticket approved! Email dispatched and QR pass unlocked.');
         }
 
-        function previewTicketPass(id, name, tier, email) {
+        function previewTicketPass(id, name, tier, email, phone) {
             document.getElementById('mTicketId').innerText = id;
             document.getElementById('mTicketName').innerText = name;
             document.getElementById('mTicketTier').innerText = tier;
@@ -377,6 +399,9 @@
             const qrContainer = document.getElementById('modalQrCodeContainer');
             qrContainer.innerHTML = '';
             new QRCode(qrContainer, { text: "UNHINGED-PASS:" + id, width: 160, height: 160 });
+
+            const waMsg = encodeURIComponent(`🔥 *UNHINGED: The Sign Out Party* 🔥\n\nHi ${name},\nYour ticket has been approved!\n\n🎟️ *Ticket ID:* ${id}\n📌 *Tier:* ${tier}\n📅 *Date:* Sept 5th, 2026\n\nShow this code or ID at the entrance. See you there!`);
+            document.getElementById('whatsappBtn').setAttribute('onclick', `window.open('https://wa.me/${phone}?text=${waMsg}', '_blank')`);
 
             document.getElementById('ticketModal').classList.remove('hidden');
             document.getElementById('ticketModal').classList.add('flex');
