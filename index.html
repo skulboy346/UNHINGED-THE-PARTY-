@@ -8,15 +8,6 @@
     <link rel="icon" type="image/jpeg" href="IMG-20260815-WA0014.jpg">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- QR Code Generator Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            emailjs.init("S35DUIrMpyDibKjLc");
-        })();
-    </script>
     <style>
         .party-bg {
             background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('IMG-20260815-WA0014.jpg');
@@ -28,7 +19,6 @@
 </head>
 <body class="party-bg min-h-screen text-white font-sans flex flex-col justify-between selection:bg-red-600 selection:text-white">
 
-    <!-- Clean Public Navigation Header -->
     <header class="bg-black/80 backdrop-blur-md border-b border-red-500/30 sticky top-0 z-50">
         <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="font-black italic text-xl tracking-wider text-red-500">🔥 UNHINGED</h1>
@@ -36,11 +26,8 @@
         </div>
     </header>
 
-    <!-- Main Container -->
     <main class="max-w-4xl mx-auto px-4 py-10 w-full flex-grow">
-
-        <!-- VIEW 1: PUBLIC BUY TICKET -->
-        <section id="view-buy" class="max-w-lg mx-auto bg-black/85 backdrop-blur-xl border border-red-500/40 p-6 sm:p-8 rounded-3xl shadow-2xl shadow-red-950/50">
+        <section class="max-w-lg mx-auto bg-black/85 backdrop-blur-xl border border-red-500/40 p-6 sm:p-8 rounded-3xl shadow-2xl shadow-red-950/50">
             <div class="text-center mb-6">
                 <span class="bg-red-600 text-white text-xs px-3 py-1 rounded-full font-black uppercase tracking-widest animate-pulse">Mavericks Presents</span>
                 <h2 class="text-3xl font-black italic tracking-tighter mt-3 text-red-500">UNHINGED <span class="text-white text-sm not-italic block font-bold tracking-normal mt-1">The Sign Out Party</span><span class="text-gray-300 text-xs not-italic block font-normal mt-1">No Lectures. No Rules. No Regrets.</span></h2>
@@ -52,7 +39,6 @@
                 </div>
             </div>
 
-            <!-- Payment Options Card -->
             <div class="bg-gradient-to-r from-red-950/60 to-black border border-red-500/30 p-4 rounded-2xl mb-6 space-y-3">
                 <div class="text-center text-xs text-red-400 font-bold uppercase tracking-wider">Transfer Exactly <span id="paymentAmountText" class="text-white font-black text-sm">₦10,000</span> To:</div>
                 
@@ -68,7 +54,6 @@
                     <div class="flex justify-between"><span class="text-gray-400">Account Name:</span><span class="font-semibold text-white">Joy Isaac</span></div>
                 </div>
 
-                <!-- Quick App Launch Buttons -->
                 <div class="grid grid-cols-2 gap-2 pt-1">
                     <button type="button" onclick="openApp('OPay')" class="bg-emerald-600/80 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
                         <span>🟢 Open OPay</span>
@@ -79,7 +64,6 @@
                 </div>
             </div>
 
-            <!-- Form -->
             <form id="ticketForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Full Name *</label>
@@ -123,147 +107,27 @@
 
             <div id="successMessage" class="hidden mt-6 bg-emerald-950/80 border border-emerald-500/50 p-5 rounded-2xl text-emerald-200 text-center space-y-2">
                 <h3 class="font-black text-lg text-emerald-400">⚡ Booking Request Logged!</h3>
-                <p class="text-xs leading-relaxed">Once admin verifies your transfer, your unique passes will be approved and emailed instantly.</p>
+                <p class="text-xs leading-relaxed">Once admin verifies your transfer, your unique digital passes will be approved and emailed instantly.</p>
             </div>
         </section>
-
-        <!-- VIEW 2: ADMIN DASHBOARD (Accessed via #admin) -->
-        <section id="view-admin" class="hidden space-y-6">
-            <div id="adminLoginCard" class="max-w-md mx-auto bg-black/85 backdrop-blur-xl border border-red-500/40 p-8 rounded-3xl shadow-2xl">
-                <h2 class="text-2xl font-black italic mb-2 text-red-500">ADMIN LOGIN</h2>
-                <p class="text-sm text-gray-400 mb-6">Enter passcode: <code class="text-yellow-400">UNHINGED'26</code></p>
-                <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                    <input type="password" id="passcode" placeholder="Enter Passcode" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white">
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold uppercase tracking-wider py-3 rounded-xl transition text-sm shadow-lg">Login Panel</button>
-                </form>
-            </div>
-
-            <div id="adminDashboardContent" class="hidden space-y-6">
-                <!-- Metrics Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-black/80 border border-white/10 p-5 rounded-2xl">
-                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Total Revenue</p>
-                        <h3 id="metricRevenue" class="text-2xl font-black text-emerald-400 mt-1">₦0</h3>
-                    </div>
-                    <div class="bg-black/80 border border-white/10 p-5 rounded-2xl">
-                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Approved Tickets</p>
-                        <h3 id="metricTickets" class="text-2xl font-black text-white mt-1">0</h3>
-                    </div>
-                    <div class="bg-black/80 border border-white/10 p-5 rounded-2xl">
-                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Checked In At Gate</p>
-                        <h3 id="metricCheckedIn" class="text-2xl font-black text-yellow-400 mt-1">0</h3>
-                    </div>
-                </div>
-
-                <div class="bg-black/85 backdrop-blur-xl border border-red-500/30 p-6 rounded-3xl shadow-2xl space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-xl font-black italic text-red-500">GUESTBOOK REGISTRY</h2>
-                        <button onclick="loadAdminData()" class="bg-white/10 hover:bg-white/20 text-xs px-3.5 py-2 rounded-xl font-bold transition">Refresh 🔄</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider">
-                                    <th class="py-3 px-3">Buyer & Contact</th>
-                                    <th class="py-3 px-3">Details</th>
-                                    <th class="py-3 px-3">Ref</th>
-                                    <th class="py-3 px-3">Status</th>
-                                    <th class="py-3 px-3 text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ticketTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW 3: GATE SCANNER (Accessed via #scanner) -->
-        <section id="view-scanner" class="hidden max-w-md mx-auto bg-black/85 backdrop-blur-xl border border-red-500/40 p-6 sm:p-8 rounded-3xl shadow-2xl text-center space-y-4">
-            <h2 class="text-2xl font-black italic text-red-500">GATE VALIDATION SCANNER</h2>
-            <p class="text-xs text-gray-400">Type or paste individual ticket ID to check-in attendee.</p>
-            
-            <div class="space-y-3">
-                <input type="text" id="scanInput" placeholder="Enter Ticket ID (e.g. UNH-123456-1)" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white text-center font-mono uppercase">
-                <button onclick="processScan()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase tracking-wider py-3 rounded-xl transition text-sm shadow-lg">Verify & Check-In</button>
-            </div>
-
-            <div id="scanResultCard" class="hidden p-5 rounded-2xl border text-center space-y-2 mt-4">
-                <h3 id="scanResultTitle" class="font-black text-lg"></h3>
-                <p id="scanResultDesc" class="text-xs"></p>
-            </div>
-        </section>
-
     </main>
 
-    <!-- TICKET PASS MODAL -->
-    <div id="ticketModal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-        <div class="bg-zinc-900 border border-red-500/40 max-w-sm w-full p-6 rounded-3xl shadow-2xl text-center space-y-4 relative">
-            <span class="bg-red-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-widest">Digital Access Pass</span>
-            <h3 class="font-black italic text-xl text-red-500">UNHINGED ACCESS PASS</h3>
-            <div id="modalQrCodeContainer" class="flex justify-center p-4 bg-white rounded-2xl mx-auto w-fit"></div>
-            <div class="text-left text-xs space-y-1.5 bg-black/40 p-3.5 rounded-xl border border-white/10 text-gray-300">
-                <p><strong>Ticket ID:</strong> <span id="mTicketId" class="text-white font-mono"></span></p>
-                <p><strong>Name:</strong> <span id="mTicketName" class="text-white font-bold"></span></p>
-                <p><strong>Tier:</strong> <span id="mTicketTier" class="text-yellow-400 font-bold"></span></p>
-                <p><strong>Email:</strong> <span id="mTicketEmail" class="text-white"></span></p>
-            </div>
-            <div class="space-y-2">
-                <button id="whatsappBtn" onclick="" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition">💬 Send via WhatsApp</button>
-                <button onclick="closeModal()" class="w-full bg-zinc-700 hover:bg-zinc-600 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
     <footer class="bg-black/80 border-t border-white/10 py-6 text-center text-xs text-gray-500 space-y-1">
         <p>For Info & Table Reservations: <span class="text-gray-300 font-semibold">Benedict (08145200922), Iyiola (09058812232)</span></p>
         <p class="font-bold tracking-widest uppercase text-red-500/90 pt-1">Powered by The Ambassadors</p>
     </footer>
 
-    <!-- Script Logic -->
     <script>
-        window.addEventListener('DOMContentLoaded', router);
-        window.addEventListener('hashchange', router);
-
-        function router() {
-            const hash = window.location.hash;
-            document.getElementById('view-buy').classList.add('hidden');
-            document.getElementById('view-admin').classList.add('hidden');
-            document.getElementById('view-scanner').classList.add('hidden');
-
-            if (hash === '#admin') {
-                document.getElementById('view-admin').classList.remove('hidden');
-            } else if (hash === '#scanner') {
-                document.getElementById('view-scanner').classList.remove('hidden');
-            } else {
-                document.getElementById('view-buy').classList.remove('hidden');
-            }
-        }
-
         function copyAccount() {
             navigator.clipboard.writeText("8134250825");
             alert("Account number (8134250825) copied to clipboard!");
         }
-
         function openApp(appName) {
             navigator.clipboard.writeText("8134250825");
             alert(`Account number copied! Opening ${appName}... Please paste it into your app to transfer.`);
-            if(appName === 'OPay') {
-                window.location.href = "https://www.opayweb.com";
-            } else {
-                window.location.href = "https://palmpay.com";
-            }
+            if(appName === 'OPay') { window.location.href = "https://www.opayweb.com"; } 
+            else { window.location.href = "https://palmpay.com"; }
         }
-
-        function getDatabase() {
-            return JSON.parse(localStorage.getItem('unhinged_party_db') || '[]');
-        }
-
-        function saveDatabase(data) {
-            localStorage.setItem('unhinged_party_db', JSON.stringify(data));
-        }
-
         function updateTotal() {
             const price = parseInt(document.getElementById('tier').value);
             const qty = parseInt(document.getElementById('qty').value) || 1;
@@ -271,7 +135,6 @@
             document.getElementById('totalDisplay').innerText = '₦' + total.toLocaleString();
             document.getElementById('paymentAmountText').innerText = '₦' + total.toLocaleString();
         }
-
         function handleFormSubmit(e) {
             e.preventDefault();
             const name = document.getElementById('name').value;
@@ -282,7 +145,7 @@
             const qty = parseInt(document.getElementById('qty').value);
             const reference = document.getElementById('reference').value;
 
-            const tickets = getDatabase();
+            const tickets = JSON.parse(localStorage.getItem('unhinged_party_db') || '[]');
             const batchId = 'UNH-' + Math.floor(100000 + Math.random() * 900000);
 
             for(let i = 1; i <= qty; i++) {
@@ -290,163 +153,16 @@
                     id: batchId + '-' + i,
                     name, email, phone, tierName, price, reference,
                     status: 'Pending',
+                    emailSent: false,
                     date: new Date().toLocaleDateString()
                 });
             }
 
-            saveDatabase(tickets);
+            localStorage.setItem('unhinged_party_db', JSON.stringify(tickets));
             document.getElementById('ticketForm').reset();
             updateTotal();
             document.getElementById('ticketForm').classList.add('hidden');
             document.getElementById('successMessage').classList.remove('hidden');
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            if (document.getElementById('passcode').value === "UNHINGED'26") {
-                document.getElementById('adminLoginCard').classList.add('hidden');
-                document.getElementById('adminDashboardContent').classList.remove('hidden');
-                loadAdminData();
-            } else {
-                alert("Invalid Passcode! Hint: UNHINGED'26");
-            }
-        }
-
-        function loadAdminData() {
-            const tickets = getDatabase();
-            const tbody = document.getElementById('ticketTableBody');
-            tbody.innerHTML = '';
-
-            let revenue = 0;
-            let approvedCount = 0;
-            let checkedInCount = 0;
-
-            tickets.forEach((t, index) => {
-                if (t.status === 'Approved' || t.status === 'Checked-In') {
-                    revenue += t.price;
-                    approvedCount++;
-                }
-                if (t.status === 'Checked-In') {
-                    checkedInCount++;
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-white/5 hover:bg-white/5 transition";
-                tr.innerHTML = `
-                    <td class="py-3 px-3">
-                        <strong class="text-white">${t.name}</strong><br>
-                        <span class="text-xs text-gray-400">${t.email} / ${t.phone}</span>
-                    </td>
-                    <td class="py-3 px-3 text-xs">
-                        <span class="text-yellow-400 font-bold">${t.tierName}</span><br>
-                        <span class="text-gray-400 font-mono">${t.id}</span>
-                    </td>
-                    <td class="py-3 px-3 text-xs font-mono text-gray-300">${t.reference}</td>
-                    <td class="py-3 px-3">
-                        <span class="px-2.5 py-1 text-[10px] rounded-full font-bold uppercase tracking-wider ${
-                            t.status === 'Checked-In' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-                            t.status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 
-                            'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                        }">${t.status}</span>
-                    </td>
-                    <td class="py-3 px-3 text-right space-x-1">
-                        ${t.status === 'Pending' 
-                            ? `<button onclick="approveTicket(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">Approve</button>`
-                            : `<button onclick="previewTicketPass('${t.id}', '${t.name}', '${t.tierName}', '${t.email}', '${t.phone}')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">View Pass</button>`
-                        }
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('metricRevenue').innerText = '₦' + revenue.toLocaleString();
-            document.getElementById('metricTickets').innerText = approvedCount;
-            document.getElementById('metricCheckedIn').innerText = checkedInCount;
-
-            if (tickets.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-gray-500 text-xs uppercase">No bookings recorded yet.</td></tr>`;
-            }
-        }
-
-        function approveTicket(index) {
-            const tickets = getDatabase();
-            tickets[index].status = 'Approved';
-            saveDatabase(tickets);
-
-            const t = tickets[index];
-            emailjs.send("service_fj37dx6", "template_udorxlh", {
-                to_name: t.name,
-                to_email: t.email,
-                ticket_id: t.id,
-                tier: t.tierName,
-                event_date: "Sept 5th, 2026"
-            }).then(function(response) {
-                console.log("Email sent successfully!", response.status);
-            }, function(error) {
-                console.log("Email dispatch failed:", error);
-            });
-
-            loadAdminData();
-            alert('Ticket approved! Email dispatched and QR pass unlocked.');
-        }
-
-        function previewTicketPass(id, name, tier, email, phone) {
-            document.getElementById('mTicketId').innerText = id;
-            document.getElementById('mTicketName').innerText = name;
-            document.getElementById('mTicketTier').innerText = tier;
-            document.getElementById('mTicketEmail').innerText = email;
-            
-            const qrContainer = document.getElementById('modalQrCodeContainer');
-            qrContainer.innerHTML = '';
-            new QRCode(qrContainer, { text: "UNHINGED-PASS:" + id, width: 160, height: 160 });
-
-            const waMsg = encodeURIComponent(`🔥 *UNHINGED: The Sign Out Party* 🔥\n\nHi ${name},\nYour ticket has been approved!\n\n🎟️ *Ticket ID:* ${id}\n📌 *Tier:* ${tier}\n📅 *Date:* Sept 5th, 2026\n\nShow this code or ID at the entrance. See you there!`);
-            document.getElementById('whatsappBtn').setAttribute('onclick', `window.open('https://wa.me/${phone}?text=${waMsg}', '_blank')`);
-
-            document.getElementById('ticketModal').classList.remove('hidden');
-            document.getElementById('ticketModal').classList.add('flex');
-        }
-
-        function closeModal() {
-            document.getElementById('ticketModal').classList.add('hidden');
-            document.getElementById('ticketModal').classList.remove('flex');
-        }
-
-        function processScan() {
-            const code = document.getElementById('scanInput').value.trim();
-            const tickets = getDatabase();
-            const card = document.getElementById('scanResultCard');
-            const title = document.getElementById('scanResultTitle');
-            const desc = document.getElementById('scanResultDesc');
-            
-            card.classList.remove('hidden');
-            const ticketIndex = tickets.findIndex(t => t.id === code);
-
-            if (ticketIndex === -1) {
-                card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4";
-                title.innerText = "❌ INVALID TICKET CODE";
-                desc.innerText = "This ticket ID does not exist in the database.";
-                return;
-            }
-
-            const ticket = tickets[ticketIndex];
-
-            if (ticket.status === 'Pending') {
-                card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1 mt-4";
-                title.innerText = "⚠️ PAYMENT PENDING";
-                desc.innerText = `Belongs to ${ticket.name}, but admin has not approved payment yet.`;
-            } else if (ticket.status === 'Checked-In') {
-                card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4";
-                title.innerText = "🚨 ALREADY USED (DUPLICATE ENTRY)";
-                desc.innerText = `Ticket ${ticket.id} for ${ticket.name} was already scanned and checked in!`;
-            } else {
-                tickets[ticketIndex].status = 'Checked-In';
-                saveDatabase(tickets);
-                card.className = "p-5 rounded-2xl border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 text-center space-y-1 mt-4";
-                title.innerText = "✅ ACCESS GRANTED";
-                desc.innerText = `Welcome ${ticket.name} (${ticket.tierName})! Entry verified successfully.`;
-            }
-            document.getElementById('scanInput').value = '';
         }
     </script>
 </body>
