@@ -55,20 +55,20 @@
                         <span class="text-gray-400">Account No:</span>
                         <div class="flex items-center space-x-2">
                             <span id="accNum" class="font-bold font-mono text-base text-yellow-400">8134250825</span>
-                            <button onclick="copyAccount()" class="bg-white/10 hover:bg-white/20 text-[10px] px-2 py-1 rounded font-bold uppercase transition">Copy</button>
+                            <button type="button" onclick="copyAccount()" class="bg-white/10 hover:bg-white/20 text-[10px] px-2 py-1 rounded font-bold uppercase transition">Copy</button>
                         </div>
                     </div>
                     <div class="flex justify-between"><span class="text-gray-400">Account Name:</span><span class="font-semibold text-white">Joy Isaac</span></div>
                 </div>
 
-                <!-- Quick App Launch Buttons -->
+                <!-- Fixed Quick Action Buttons -->
                 <div class="grid grid-cols-2 gap-2 pt-1">
-                    <a href="opay://" class="bg-emerald-600/80 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
-                        <span>🟢 Pay with OPay</span>
-                    </a>
-                    <a href="palmpay://" class="bg-blue-600/80 hover:bg-blue-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
-                        <span>🔵 Pay with PalmPay</span>
-                    </a>
+                    <button type="button" onclick="openApp('OPay')" class="bg-emerald-600/80 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
+                        <span>🟢 Open OPay</span>
+                    </button>
+                    <button type="button" onclick="openApp('PalmPay')" class="bg-blue-600/80 hover:bg-blue-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
+                        <span>🔵 Open PalmPay</span>
+                    </button>
                 </div>
             </div>
 
@@ -233,7 +233,19 @@
 
         function copyAccount() {
             navigator.clipboard.writeText("8134250825");
-            alert("Account number copied to clipboard!");
+            alert("Account number (8134250825) copied to clipboard!");
+        }
+
+        function openApp(appName) {
+            navigator.clipboard.writeText("8134250825");
+            alert(`Account number copied! Opening ${appName}... Please paste it into your app to transfer.`);
+            
+            // Safe fallback app launcher triggers
+            if(appName === 'OPay') {
+                window.location.href = "https://www.opayweb.com";
+            } else {
+                window.location.href = "https://palmpay.com";
+            }
         }
 
         function getDatabase() {
