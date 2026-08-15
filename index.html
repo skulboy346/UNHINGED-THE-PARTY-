@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNHINGED — The Party</title>
+    <title>UNHINGED — The Sign Out Party</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="IMG-20260815-WA0014.jpg">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- QR Code Generator Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         .party-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('2007045.jpg');
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('IMG-20260815-WA0014.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -34,7 +36,7 @@
         <section id="view-buy" class="max-w-lg mx-auto bg-black/85 backdrop-blur-xl border border-red-500/40 p-6 sm:p-8 rounded-3xl shadow-2xl shadow-red-950/50">
             <div class="text-center mb-6">
                 <span class="bg-red-600 text-white text-xs px-3 py-1 rounded-full font-black uppercase tracking-widest animate-pulse">Mavericks Presents</span>
-                <h2 class="text-3xl font-black italic tracking-tighter mt-3 text-red-500">UNHINGED <span class="text-white text-sm not-italic block font-semibold tracking-normal mt-1">No Lectures. No Rules. No Regrets.</span></h2>
+                <h2 class="text-3xl font-black italic tracking-tighter mt-3 text-red-500">UNHINGED <span class="text-white text-sm not-italic block font-bold tracking-normal mt-1">The Sign Out Party</span><span class="text-gray-300 text-xs not-italic block font-normal mt-1">No Lectures. No Rules. No Regrets.</span></h2>
                 
                 <div class="grid grid-cols-2 gap-2 mt-4 text-xs font-semibold bg-white/5 p-3 rounded-xl border border-white/10 text-gray-300">
                     <div>📅 <span class="text-white">Sept 5th, 2026</span></div>
@@ -48,7 +50,7 @@
                 <div class="text-center text-xs text-red-400 font-bold uppercase tracking-wider">Transfer Exactly <span id="paymentAmountText" class="text-white font-black text-sm">₦10,000</span> To:</div>
                 
                 <div class="bg-black/50 p-3 rounded-xl border border-white/10 text-sm space-y-1">
-                    <div class="flex justify-between"><span class="text-gray-400">Bank:</span><span class="font-semibold text-white">Opay / Moniepoint</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Bank:</span><span class="font-semibold text-white">Opay</span></div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-400">Account No:</span>
                         <div class="flex items-center space-x-2">
@@ -61,10 +63,10 @@
 
                 <!-- Quick App Launch Buttons -->
                 <div class="grid grid-cols-2 gap-2 pt-1">
-                    <a href="opay://" onclick="setAppChoice('OPay')" class="bg-emerald-600/80 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
+                    <a href="opay://" class="bg-emerald-600/80 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
                         <span>🟢 Pay with OPay</span>
                     </a>
-                    <a href="palmpay://" onclick="setAppChoice('PalmPay')" class="bg-blue-600/80 hover:bg-blue-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
+                    <a href="palmpay://" class="bg-blue-600/80 hover:bg-blue-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1">
                         <span>🔵 Pay with PalmPay</span>
                     </a>
                 </div>
@@ -232,10 +234,6 @@
         function copyAccount() {
             navigator.clipboard.writeText("8134250825");
             alert("Account number copied to clipboard!");
-        }
-
-        function setAppChoice(app) {
-            // Optional analytics or notification helper when they click OPay/PalmPay
         }
 
         function getDatabase() {
