@@ -64,7 +64,7 @@
             <div class="bg-black/85 backdrop-blur-xl border border-red-500/30 p-6 rounded-3xl shadow-2xl space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="text-xl font-black italic text-red-500">GUESTBOOK REGISTRY</h2>
-                    <button onclick="loadAdminData()" class="bg-white/10 hover:bg-white/20 text-xs px-3.5 py-2 rounded-xl font-bold transition">Refresh 🔄</button>
+                    <span class="text-xs text-emerald-400 font-bold uppercase animate-pulse">● Live Cloud Sync</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
@@ -129,17 +129,42 @@
         <p class="font-bold tracking-widest uppercase text-red-500/90">Powered by The Ambassadors</p>
     </footer>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9IvTKXwVdskWnvwfCqPplUsvOiESx7lI",
+            authDomain: "unhinged-the-signout-party.firebaseapp.com",
+            databaseURL: "https://unhinged-the-signout-party-default-rtdb.firebaseio.com",
+            projectId: "unhinged-the-signout-party",
+            storageBucket: "unhinged-the-signout-party.firebasestorage.app",
+            messagingSenderId: "688394787960",
+            appId: "1:688394787960:web:141b06edbf5f44aa4ee18d"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         let html5QrCode = null;
+        let cachedTickets = {};
+
         function handleAdminLogin(e) {
             e.preventDefault();
             if (document.getElementById('passcode').value === "UNHINGED'26") {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('dashboardSection').classList.remove('hidden');
                 document.getElementById('navTabs').classList.remove('hidden');
-                loadAdminData();
+                initRealtimeSync();
             } else { alert("Invalid Passcode!"); }
         }
+
+        function initRealtimeSync() {
+            db.ref('tickets').on('value', (snapshot) => {
+                cachedTickets = snapshot.val() || {};
+                renderAdminTable();
+            });
+        }
+
         function switchTab(tab) {
             document.getElementById('dashboardSection').classList.add('hidden');
             document.getElementById('scannerSection').classList.add('hidden');
@@ -148,13 +173,14 @@
             if (tab === 'dashboard') {
                 document.getElementById('dashboardSection').classList.remove('hidden');
                 document.getElementById('btn-dashboard').className = "bg-red-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition";
-                stopScanner(); loadAdminData();
+                stopScanner();
             } else if (tab === 'scanner') {
                 document.getElementById('scannerSection').classList.remove('hidden');
                 document.getElementById('btn-scanner').className = "bg-red-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition";
                 startScanner();
             }
         }
+
         function startScanner() {
             if (!html5QrCode) { html5QrCode = new Html5Qrcode("reader"); }
             html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
@@ -166,16 +192,18 @@
         function stopScanner() {
             if (html5QrCode && html5QrCode.isScanning) { html5QrCode.stop().catch(err => {}); }
         }
-        function getDatabase() { return JSON.parse(localStorage.getItem('unhinged_party_db') || '[]'); }
-        function saveDatabase(data) { localStorage.setItem('unhinged_party_db', JSON.stringify(data)); }
-        function loadAdminData() {
-            const tickets = getDatabase();
+
+        function renderAdminTable() {
             const tbody = document.getElementById('ticketTableBody');
             tbody.innerHTML = '';
             let revenue = 0, approvedCount = 0, checkedInCount = 0;
-            tickets.forEach((t, index) => {
+            const keys = Object.keys(cachedTickets);
+
+            keys.forEach((key) => {
+                const t = cachedTickets[key];
                 if (t.status === 'Approved' || t.status === 'Checked-In') { revenue += t.price; approvedCount++; }
                 if (t.status === 'Checked-In') { checkedInCount++; }
+
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-white/5 hover:bg-white/5 transition";
                 tr.innerHTML = `
@@ -183,35 +211,36 @@
                     <td class="py-3 px-3 text-xs"><span class="text-yellow-400 font-bold">${t.tierName}</span><br><span class="text-gray-400 font-mono">${t.id}</span></td>
                     <td class="py-3 px-3 text-xs font-mono text-gray-300">${t.reference}</td>
                     <td class="py-3 px-3"><span class="px-2.5 py-1 text-[10px] rounded-full font-bold uppercase tracking-wider ${t.status === 'Checked-In' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : t.status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">${t.status}</span></td>
-                    <td class="py-3 px-3 text-right space-x-1">${t.status === 'Pending' ? `<button onclick="approveTicket(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">Approve</button>` : `<button onclick="previewTicketPass('${t.id}')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">View Pass</button>`}</td>`;
+                    <td class="py-3 px-3 text-right space-x-1">${t.status === 'Pending' ? `<button onclick="approveTicket('${t.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">Approve</button>` : `<button onclick="previewTicketPass('${t.id}')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">View Pass</button>`}</td>`;
                 tbody.appendChild(tr);
             });
+
             document.getElementById('metricRevenue').innerText = '₦' + revenue.toLocaleString();
             document.getElementById('metricTickets').innerText = approvedCount;
             document.getElementById('metricCheckedIn').innerText = checkedInCount;
-            if (tickets.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-gray-500 text-xs uppercase">No bookings recorded yet.</td></tr>`; }
+
+            if (keys.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-gray-500 text-xs uppercase">No bookings recorded yet.</td></tr>`; }
         }
-        function approveTicket(index) {
-            const tickets = getDatabase();
-            tickets[index].status = 'Approved';
-            sendEmailTicket(index, false);
-            saveDatabase(tickets);
-            loadAdminData();
-            alert('Ticket approved successfully!');
+
+        function approveTicket(ticketId) {
+            db.ref('tickets/' + ticketId).update({ status: 'Approved' }).then(() => {
+                sendEmailTicket(ticketId, false);
+                alert('Ticket approved successfully!');
+            });
         }
-        function sendEmailTicket(index, manualTrigger = true) {
-            const tickets = getDatabase();
-            const t = tickets[index];
+
+        function sendEmailTicket(ticketId, manualTrigger = true) {
+            const t = cachedTickets[ticketId];
+            if(!t) return;
             emailjs.send("service_fj37dx6", "template_udorxlh", { to_name: t.name, to_email: t.email, ticket_id: t.id, tier: t.tierName, event_date: "Sept 5th, 2026" })
             .then(function() {
-                tickets[index].emailSent = true;
-                saveDatabase(tickets);
-                if(manualTrigger) { alert(`✅ Email successfully sent to ${t.email}!`); previewTicketPass(t.id); }
+                db.ref('tickets/' + ticketId).update({ emailSent: true });
+                if(manualTrigger) { alert(`✅ Email successfully sent to ${t.email}!`); previewTicketPass(ticketId); }
             }, function(error) { if(manualTrigger) { alert("❌ Email failed to send."); } });
         }
+
         function previewTicketPass(ticketId) {
-            const tickets = getDatabase();
-            const t = tickets.find(item => item.id === ticketId);
+            const t = cachedTickets[ticketId];
             if(!t) return;
             document.getElementById('mTicketId').innerText = t.id;
             document.getElementById('mTicketName').innerText = t.name;
@@ -220,32 +249,41 @@
             const qrContainer = document.getElementById('modalQrCodeContainer');
             qrContainer.innerHTML = '';
             new QRCode(qrContainer, { text: "UNHINGED-PASS:" + t.id, width: 160, height: 160 });
-            const ticketIndex = tickets.findIndex(item => item.id === ticketId);
+
             const emailBtn = document.getElementById('modalEmailBtn');
             if (t.emailSent) { emailBtn.innerText = "✅ Email Sent (Resend?)"; emailBtn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition"; } 
             else { emailBtn.innerText = "📧 Send Email"; emailBtn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition"; }
-            emailBtn.setAttribute('onclick', `sendEmailTicket(${ticketIndex}, true)`);
+            emailBtn.setAttribute('onclick', `sendEmailTicket('${ticketId}', true)`);
+
             const cleanPhone = t.phone.replace(/^0/, '234');
             const waMsg = encodeURIComponent(`🔥 *UNHINGED: The Sign Out Party* 🔥\n\nHi ${t.name},\nYour ticket has been approved!\n\n🎟️ *Ticket ID:* ${t.id}\n📌 *Tier:* ${t.tierName}\n📅 *Date:* Sept 5th, 2026\n\nShow this code or ID at the entrance. See you there!`);
             document.getElementById('modalWhatsappBtn').setAttribute('onclick', `window.open('https://wa.me/${cleanPhone}?text=${waMsg}', '_blank')`);
             document.getElementById('ticketModal').classList.remove('hidden');
             document.getElementById('ticketModal').classList.add('flex');
         }
-        function closeModal() { document.getElementById('ticketModal').classList.add('hidden'); document.getElementById('ticketModal').classList.remove('flex'); loadAdminData(); }
+
+        function closeModal() { document.getElementById('ticketModal').classList.add('hidden'); document.getElementById('ticketModal').classList.remove('flex'); }
+
         function processScan(rawCode) {
-            const code = rawCode ? rawCode.trim() : '';
-            const tickets = getDatabase();
+            const code = rawCode ? rawCode.trim().toLowerCase() : '';
             const card = document.getElementById('scanResultCard');
             const title = document.getElementById('scanResultTitle');
             const desc = document.getElementById('scanResultDesc');
             card.classList.remove('hidden');
-            const ticketIndex = tickets.findIndex(t => t.id.toLowerCase() === code.toLowerCase());
+
+            const keys = Object.keys(cachedTickets);
+            const foundKey = keys.find(k => cachedTickets[k].id.toLowerCase() === code);
+
             if (!code) { card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1 mt-4"; title.innerText = "⚠️ EMPTY CODE"; desc.innerText = "Please enter or scan a valid ticket code."; return; }
-            if (ticketIndex === -1) { card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4"; title.innerText = "❌ INVALID TICKET CODE"; desc.innerText = `Code "${code}" does not exist in the database.`; return; }
-            const ticket = tickets[ticketIndex];
+            if (!foundKey) { card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4"; title.innerText = "❌ INVALID TICKET CODE"; desc.innerText = `Code "${code}" does not exist in the database.`; return; }
+            
+            const ticket = cachedTickets[foundKey];
             if (ticket.status === 'Pending') { card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1 mt-4"; title.innerText = "⚠️ PAYMENT PENDING"; desc.innerText = `Belongs to ${ticket.name}, but payment is not approved yet.`; } 
             else if (ticket.status === 'Checked-In') { card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4"; title.innerText = "🚨 ALREADY USED (DUPLICATE ENTRY)"; desc.innerText = `Ticket ${ticket.id} for ${ticket.name} was already scanned and checked in!`; } 
-            else { tickets[ticketIndex].status = 'Checked-In'; saveDatabase(tickets); card.className = "p-5 rounded-2xl border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 text-center space-y-1 mt-4"; title.innerText = "✅ ACCESS GRANTED"; desc.innerText = `Welcome ${ticket.name} (${ticket.tierName})! Entry verified successfully.`; }
+            else {
+                db.ref('tickets/' + foundKey).update({ status: 'Checked-In' });
+                card.className = "p-5 rounded-2xl border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 text-center space-y-1 mt-4"; title.innerText = "✅ ACCESS GRANTED"; desc.innerText = `Welcome ${ticket.name} (${ticket.tierName})! Entry verified successfully.`;
+            }
             document.getElementById('scanInput').value = '';
         }
     </script>

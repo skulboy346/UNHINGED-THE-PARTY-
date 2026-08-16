@@ -102,7 +102,7 @@
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Sender Name / Transfer Reference *</label>
                     <input type="text" id="reference" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white placeholder-gray-500" placeholder="Name used on transfer app">
                 </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-black tracking-wider uppercase py-3.5 rounded-xl transition text-sm shadow-lg shadow-red-950/50">
+                <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-black tracking-wider uppercase py-3.5 rounded-xl transition text-sm shadow-lg shadow-red-950/50">
                     I Have Made Payment 🚀
                 </button>
             </form>
@@ -119,7 +119,22 @@
         <p class="font-bold tracking-widest uppercase text-red-500/90 pt-1">Powered by The Ambassadors</p>
     </footer>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9IvTKXwVdskWnvwfCqPplUsvOiESx7lI",
+            authDomain: "unhinged-the-signout-party.firebaseapp.com",
+            databaseURL: "https://unhinged-the-signout-party-default-rtdb.firebaseio.com",
+            projectId: "unhinged-the-signout-party",
+            storageBucket: "unhinged-the-signout-party.firebasestorage.app",
+            messagingSenderId: "688394787960",
+            appId: "1:688394787960:web:141b06edbf5f44aa4ee18d"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         function copyAccount() {
             navigator.clipboard.writeText("8134250825");
             alert("Account number (8134250825) copied to clipboard!");
@@ -139,6 +154,10 @@
         }
         function handleFormSubmit(e) {
             e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "Submitting...";
+
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
@@ -147,24 +166,31 @@
             const qty = parseInt(document.getElementById('qty').value);
             const reference = document.getElementById('reference').value;
 
-            const tickets = JSON.parse(localStorage.getItem('unhinged_party_db') || '[]');
             const batchId = 'UNH-' + Math.floor(100000 + Math.random() * 900000);
-
+            
+            let promises = [];
             for(let i = 1; i <= qty; i++) {
-                tickets.push({
-                    id: batchId + '-' + i,
+                const ticketId = batchId + '-' + i;
+                const ticketData = {
+                    id: ticketId,
                     name, email, phone, tierName, price, reference,
                     status: 'Pending',
                     emailSent: false,
                     date: new Date().toLocaleDateString()
-                });
+                };
+                promises.push(db.ref('tickets/' + ticketId).set(ticketData));
             }
 
-            localStorage.setItem('unhinged_party_db', JSON.stringify(tickets));
-            document.getElementById('ticketForm').reset();
-            updateTotal();
-            document.getElementById('ticketForm').classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
+            Promise.all(promises).then(() => {
+                document.getElementById('ticketForm').reset();
+                updateTotal();
+                document.getElementById('ticketForm').classList.add('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
+            }).catch(err => {
+                alert("Submission failed. Please check your network.");
+                btn.disabled = false;
+                btn.innerText = "I Have Made Payment 🚀";
+            });
         }
     </script>
 </body>
