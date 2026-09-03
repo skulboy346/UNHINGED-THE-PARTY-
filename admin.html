@@ -4,46 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNHINGED — Admin Portal</title>
-    <link rel="icon" type="image/jpeg" href="IMG-20260815-WA0014.jpg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="IMG-20260830-WA0074.jpg">
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() { emailjs.init("S35DUIrMpyDibKjLc"); })();
     </script>
     <style>
         .party-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('IMG-20260815-WA0014.jpg');
+            background-image: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.96)), url('IMG-20260830-WA0074.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
     </style>
 </head>
-<body class="party-bg min-h-screen text-white font-sans flex flex-col justify-between selection:bg-red-600 selection:text-white">
+<body class="party-bg min-h-screen text-white font-sans flex flex-col justify-between selection:bg-amber-500 selection:text-black">
 
-    <header class="bg-black/90 backdrop-blur-md border-b border-red-500/30 sticky top-0 z-50">
+    <!-- Top Navigation Header -->
+    <header class="bg-black/90 backdrop-blur-md border-b border-amber-500/30 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="font-black italic text-xl tracking-wider text-red-500">🔥 UNHINGED <span class="text-xs text-gray-400 not-italic uppercase tracking-widest font-normal ml-2">Admin Portal</span></h1>
-            <div id="navTabs" class="hidden space-x-2">
-                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="bg-red-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition">Registry</button>
-                <button onclick="switchTab('scanner')" id="btn-scanner" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition">Gate Scanner</button>
+            <div class="flex items-center space-x-2">
+                <span class="text-xl">🔥</span>
+                <h1 class="font-black italic text-xl tracking-wider text-amber-500">UNHINGED <span class="text-xs text-gray-400 not-italic uppercase tracking-widest font-normal ml-2">Admin Portal</span></h1>
             </div>
+            <a href="scanner.html" target="_blank" class="bg-white/10 hover:bg-white/20 text-amber-400 text-xs px-3.5 py-1.5 rounded-xl font-bold uppercase transition border border-amber-500/30 flex items-center space-x-1">
+                <span>📷 Open Gate Scanner</span>
+            </a>
         </div>
     </header>
 
+    <!-- Main Container -->
     <main class="max-w-5xl mx-auto px-4 py-10 w-full flex-grow">
-        <section id="loginSection" class="max-w-md mx-auto bg-black/85 backdrop-blur-xl border border-red-500/40 p-8 rounded-3xl shadow-2xl">
-            <h2 class="text-2xl font-black italic mb-2 text-red-500">ADMIN LOGIN</h2>
-            <p class="text-sm text-gray-400 mb-6">Enter administrative passcode to access the management portal.</p>
+        
+        <!-- 1. Passcode Screen -->
+        <section id="loginSection" class="max-w-md mx-auto bg-black/85 backdrop-blur-xl border border-amber-500/40 p-8 rounded-3xl shadow-2xl">
+            <h2 class="text-2xl font-black italic mb-2 text-amber-500">ADMIN ACCESS</h2>
+            <p class="text-sm text-gray-400 mb-6">Enter administrative passcode to manage bookings and approvals.</p>
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
-                <input type="password" id="passcode" placeholder="Enter Passcode" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white">
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold uppercase tracking-wider py-3 rounded-xl transition text-sm shadow-lg">Authenticate</button>
+                <input type="password" id="passcode" placeholder="Enter Passcode" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white">
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider py-3 rounded-xl transition text-sm shadow-lg">Authenticate</button>
             </form>
         </section>
 
+        <!-- 2. Active Registry & Metrics Dashboard -->
         <section id="dashboardSection" class="hidden space-y-6">
+            <!-- Metrics Row -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-black/80 border border-white/10 p-5 rounded-2xl">
                     <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Total Revenue</p>
@@ -55,13 +64,14 @@
                 </div>
                 <div class="bg-black/80 border border-white/10 p-5 rounded-2xl">
                     <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Checked In At Gate</p>
-                    <h3 id="metricCheckedIn" class="text-2xl font-black text-yellow-400 mt-1">0</h3>
+                    <h3 id="metricCheckedIn" class="text-2xl font-black text-amber-400 mt-1">0</h3>
                 </div>
             </div>
 
-            <div class="bg-black/85 backdrop-blur-xl border border-red-500/30 p-6 rounded-3xl shadow-2xl space-y-4">
+            <!-- Registry Table -->
+            <div class="bg-black/85 backdrop-blur-xl border border-amber-500/30 p-6 rounded-3xl shadow-2xl space-y-4">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-black italic text-red-500">GUESTBOOK REGISTRY</h2>
+                    <h2 class="text-xl font-black italic text-amber-500">GUESTBOOK REGISTRY</h2>
                     <span class="text-xs text-emerald-400 font-bold uppercase animate-pulse">● Live Cloud Sync</span>
                 </div>
                 <div class="overflow-x-auto">
@@ -69,8 +79,8 @@
                         <thead>
                             <tr class="border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider">
                                 <th class="py-3 px-3">Buyer & Contact</th>
-                                <th class="py-3 px-3">Details</th>
-                                <th class="py-3 px-3">Ref</th>
+                                <th class="py-3 px-3">Tier & Pass ID</th>
+                                <th class="py-3 px-3">Reference</th>
                                 <th class="py-3 px-3">Status</th>
                                 <th class="py-3 px-3 text-right">Action</th>
                             </tr>
@@ -80,39 +90,18 @@
                 </div>
             </div>
         </section>
-
-        <section id="scannerSection" class="hidden max-w-lg mx-auto bg-black/85 backdrop-blur-xl border border-red-500/40 p-6 sm:p-8 rounded-3xl shadow-2xl text-center space-y-6">
-            <div>
-                <h2 class="text-2xl font-black italic text-red-500">GATE VALIDATION SCANNER</h2>
-                <p class="text-xs text-gray-400 mt-1">Scan attendee QR code via camera or enter their unique ticket ID.</p>
-            </div>
-            <div class="bg-black/50 p-4 rounded-2xl border border-white/10 space-y-3">
-                <p class="text-xs font-bold uppercase tracking-wider text-gray-300">Option 1: Camera QR Scan</p>
-                <div id="reader" class="overflow-hidden rounded-xl border border-white/10"></div>
-            </div>
-            <div class="bg-black/50 p-4 rounded-2xl border border-white/10 space-y-3">
-                <p class="text-xs font-bold uppercase tracking-wider text-gray-300">Option 2: Enter Unique Code</p>
-                <div class="flex gap-2">
-                    <input type="text" id="scanInput" placeholder="e.g. UNH-123456-1" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white text-center font-mono uppercase">
-                    <button onclick="processScan(document.getElementById('scanInput').value)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase px-4 py-3 rounded-xl transition text-xs shadow-lg">Verify</button>
-                </div>
-            </div>
-            <div id="scanResultCard" class="hidden p-5 rounded-2xl border text-center space-y-2">
-                <h3 id="scanResultTitle" class="font-black text-lg"></h3>
-                <p id="scanResultDesc" class="text-xs"></p>
-            </div>
-        </section>
     </main>
 
+    <!-- Pass Preview & Action Modal -->
     <div id="ticketModal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-        <div class="bg-zinc-900 border border-red-500/40 max-w-sm w-full p-6 rounded-3xl shadow-2xl text-center space-y-4 relative">
-            <span class="bg-red-600 text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-widest">Digital Access Pass</span>
-            <h3 class="font-black italic text-xl text-red-500">UNHINGED ACCESS PASS</h3>
+        <div class="bg-zinc-900 border border-amber-500/40 max-w-sm w-full p-6 rounded-3xl shadow-2xl text-center space-y-4 relative">
+            <span class="bg-amber-500 text-black text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-widest">Digital Access Pass</span>
+            <h3 class="font-black italic text-xl text-amber-500">UNHINGED ACCESS PASS</h3>
             <div id="modalQrCodeContainer" class="flex justify-center p-4 bg-white rounded-2xl mx-auto w-fit"></div>
             <div class="text-left text-xs space-y-1.5 bg-black/40 p-3.5 rounded-xl border border-white/10 text-gray-300">
                 <p><strong>Ticket ID:</strong> <span id="mTicketId" class="text-white font-mono"></span></p>
                 <p><strong>Name:</strong> <span id="mTicketName" class="text-white font-bold"></span></p>
-                <p><strong>Tier:</strong> <span id="mTicketTier" class="text-yellow-400 font-bold"></span></p>
+                <p><strong>Tier:</strong> <span id="mTicketTier" class="text-amber-400 font-bold"></span></p>
                 <p><strong>Email:</strong> <span id="mTicketEmail" class="text-white"></span></p>
             </div>
             <div class="space-y-2">
@@ -123,10 +112,12 @@
         </div>
     </div>
 
-    <footer class="bg-black/80 border-t border-white/10 py-6 text-center text-xs text-gray-500 space-y-1">
-        <p class="font-bold tracking-widest uppercase text-red-500/90">Powered by The Ambassadors</p>
+    <!-- Footer -->
+    <footer class="bg-black/90 border-t border-white/10 py-6 text-center text-xs text-gray-400 space-y-1">
+        <p class="font-bold tracking-widest uppercase text-amber-500">Powered by The Ambassadors</p>
     </footer>
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
@@ -142,7 +133,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let html5QrCode = null;
         let cachedTickets = {};
 
         function handleAdminLogin(e) {
@@ -150,7 +140,6 @@
             if (document.getElementById('passcode').value === "UNHINGED'26") {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('dashboardSection').classList.remove('hidden');
-                document.getElementById('navTabs').classList.remove('hidden');
                 initRealtimeSync();
             } else { alert("Invalid Passcode!"); }
         }
@@ -160,34 +149,6 @@
                 cachedTickets = snapshot.val() || {};
                 renderAdminTable();
             });
-        }
-
-        function switchTab(tab) {
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('scannerSection').classList.add('hidden');
-            document.getElementById('btn-dashboard').className = "bg-white/10 hover:bg-white/20 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition";
-            document.getElementById('btn-scanner').className = "bg-white/10 hover:bg-white/20 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition";
-            if (tab === 'dashboard') {
-                document.getElementById('dashboardSection').classList.remove('hidden');
-                document.getElementById('btn-dashboard').className = "bg-red-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition";
-                stopScanner();
-            } else if (tab === 'scanner') {
-                document.getElementById('scannerSection').classList.remove('hidden');
-                document.getElementById('btn-scanner').className = "bg-red-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold uppercase transition";
-                startScanner();
-            }
-        }
-
-        function startScanner() {
-            if (!html5QrCode) { html5QrCode = new Html5Qrcode("reader"); }
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 } },
-                (decodedText) => {
-                    let cleanCode = decodedText.includes(':') ? decodedText.split(':')[1].trim() : decodedText;
-                    processScan(cleanCode);
-                }, (err) => {}).catch(err => console.warn("Camera start failed:", err));
-        }
-        function stopScanner() {
-            if (html5QrCode && html5QrCode.isScanning) { html5QrCode.stop().catch(err => {}); }
         }
 
         function renderAdminTable() {
@@ -205,7 +166,7 @@
                 tr.className = "border-b border-white/5 hover:bg-white/5 transition";
                 tr.innerHTML = `
                     <td class="py-3 px-3"><strong class="text-white">${t.name}</strong><br><span class="text-xs text-gray-400">${t.email} / ${t.phone}</span></td>
-                    <td class="py-3 px-3 text-xs"><span class="text-yellow-400 font-bold">${t.tierName}</span><br><span class="text-gray-400 font-mono">${t.id}</span></td>
+                    <td class="py-3 px-3 text-xs"><span class="text-amber-400 font-bold">${t.tierName}</span><br><span class="text-gray-400 font-mono">${t.id}</span></td>
                     <td class="py-3 px-3 text-xs font-mono text-gray-300">${t.reference}</td>
                     <td class="py-3 px-3"><span class="px-2.5 py-1 text-[10px] rounded-full font-bold uppercase tracking-wider ${t.status === 'Checked-In' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : t.status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">${t.status}</span></td>
                     <td class="py-3 px-3 text-right space-x-1">${t.status === 'Pending' ? `<button onclick="approveTicket('${t.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">Approve</button>` : `<button onclick="previewTicketPass('${t.id}')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-2.5 py-1.5 rounded-xl font-bold uppercase">View Pass</button>`}</td>`;
@@ -229,7 +190,14 @@
         function sendEmailTicket(ticketId, manualTrigger = true) {
             const t = cachedTickets[ticketId];
             if(!t) return;
-            emailjs.send("service_fj37dx6", "template_udorxlh", { to_name: t.name, to_email: t.email, ticket_id: t.id, tier: t.tierName, event_date: "Sept 5th, 2026" })
+            emailjs.send("service_fj37dx6", "template_udorxlh", { 
+                to_name: t.name, 
+                to_email: t.email, 
+                ticket_id: t.id, 
+                tier: t.tierName, 
+                event_date: "Sat, Sept 5th, 2026 (10 PM)",
+                location: "Queens Str, Alagomeji, Lagos"
+            })
             .then(function() {
                 db.ref('tickets/' + ticketId).update({ emailSent: true });
                 if(manualTrigger) { alert(`✅ Email successfully sent to ${t.email}!`); previewTicketPass(ticketId); }
@@ -253,36 +221,13 @@
             emailBtn.setAttribute('onclick', `sendEmailTicket('${ticketId}', true)`);
 
             const cleanPhone = t.phone.replace(/^0/, '234');
-            const waMsg = encodeURIComponent(`🔥 *UNHINGED: The Sign Out Party* 🔥\n\nHi ${t.name},\nYour ticket has been approved!\n\n🎟️ *Ticket ID:* ${t.id}\n📌 *Tier:* ${t.tierName}\n📅 *Date:* Sept 5th, 2026\n\nShow this code or ID at the entrance. See you there!`);
+            const waMsg = encodeURIComponent(`🔥 *UNHINGED: The Sign Out Party* 🔥\n\nHi ${t.name},\nYour ticket has been approved!\n\n🎟️ *Ticket ID:* ${t.id}\n📌 *Tier:* ${t.tierName}\n📅 *Date:* Sat, Sept 5th, 2026 (10 PM)\n📍 *Location:* Queens Str, Alagomeji, Lagos\n🍾 *Notice:* BYOB (Bring Your Own Bottle)\n\nShow this pass code at the entrance. See you there!`);
             document.getElementById('modalWhatsappBtn').setAttribute('onclick', `window.open('https://wa.me/${cleanPhone}?text=${waMsg}', '_blank')`);
             document.getElementById('ticketModal').classList.remove('hidden');
             document.getElementById('ticketModal').classList.add('flex');
         }
 
         function closeModal() { document.getElementById('ticketModal').classList.add('hidden'); document.getElementById('ticketModal').classList.remove('flex'); }
-
-        function processScan(rawCode) {
-            const code = rawCode ? rawCode.trim().toLowerCase() : '';
-            const card = document.getElementById('scanResultCard');
-            const title = document.getElementById('scanResultTitle');
-            const desc = document.getElementById('scanResultDesc');
-            card.classList.remove('hidden');
-
-            const keys = Object.keys(cachedTickets);
-            const foundKey = keys.find(k => cachedTickets[k].id.toLowerCase() === code);
-
-            if (!code) { card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1 mt-4"; title.innerText = "⚠️ EMPTY CODE"; desc.innerText = "Please enter or scan a valid ticket code."; return; }
-            if (!foundKey) { card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4"; title.innerText = "❌ INVALID TICKET CODE"; desc.innerText = `Code "${code}" does not exist in the database.`; return; }
-            
-            const ticket = cachedTickets[foundKey];
-            if (ticket.status === 'Pending') { card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1 mt-4"; title.innerText = "⚠️ PAYMENT PENDING"; desc.innerText = `Belongs to ${ticket.name}, but payment is not approved yet.`; } 
-            else if (ticket.status === 'Checked-In') { card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4"; title.innerText = "🚨 ALREADY USED (DUPLICATE ENTRY)"; desc.innerText = `Ticket ${ticket.id} for ${ticket.name} was already scanned and checked in!`; } 
-            else {
-                db.ref('tickets/' + foundKey).update({ status: 'Checked-In' });
-                card.className = "p-5 rounded-2xl border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 text-center space-y-1 mt-4"; title.innerText = "✅ ACCESS GRANTED"; desc.innerText = `Welcome ${ticket.name} (${ticket.tierName})! Entry verified successfully.`;
-            }
-            document.getElementById('scanInput').value = '';
-        }
     </script>
 </body>
 </html>

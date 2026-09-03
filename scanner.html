@@ -5,56 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNHINGED — Gate Scanner</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="IMG-20260815-WA0014.jpg">
+    <link rel="icon" type="image/jpeg" href="IMG-20260830-WA0074.jpg">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
         .party-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('IMG-20260815-WA0014.jpg');
+            background-image: linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.96)), url('IMG-20260830-WA0074.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
     </style>
 </head>
-<body class="party-bg min-h-screen text-white font-sans flex flex-col justify-between selection:bg-red-600 selection:text-white">
+<body class="party-bg min-h-screen text-white font-sans flex flex-col justify-between selection:bg-amber-500 selection:text-black">
 
-    <header class="bg-black/90 backdrop-blur-md border-b border-red-500/30 sticky top-0 z-50">
+    <!-- Header -->
+    <header class="bg-black/90 backdrop-blur-md border-b border-amber-500/30 sticky top-0 z-50">
         <div class="max-w-md mx-auto px-4 py-4 text-center">
-            <h1 class="font-black italic text-xl tracking-wider text-red-500">🔥 UNHINGED <span class="text-xs text-gray-400 not-italic uppercase tracking-widest font-normal ml-2">Gate Check-In</span></h1>
+            <h1 class="font-black italic text-xl tracking-wider text-amber-500">🔥 UNHINGED <span class="text-xs text-gray-400 not-italic uppercase tracking-widest font-normal ml-2">Gate Scanner</span></h1>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto px-4 py-10 w-full flex-grow flex items-center justify-center">
-        <section class="w-full bg-black/85 backdrop-blur-xl border border-red-500/40 p-6 sm:p-8 rounded-3xl shadow-2xl text-center space-y-6">
+    <!-- Scanner Screen -->
+    <main class="max-w-md mx-auto px-4 py-8 w-full flex-grow flex items-center justify-center">
+        <section class="w-full bg-black/85 backdrop-blur-xl border border-amber-500/40 p-6 rounded-3xl shadow-2xl text-center space-y-6">
             <div>
-                <h2 class="text-2xl font-black italic text-red-500">GATE VALIDATION</h2>
-                <p class="text-xs text-gray-400 mt-1">Scan attendee QR pass via camera or type their ticket ID below.</p>
+                <h2 class="text-xl font-black italic text-amber-400">DOOR VERIFICATION</h2>
+                <p class="text-xs text-gray-400 mt-1">Scan pass via camera or type the ticket code below.</p>
             </div>
 
+            <!-- Option 1: Live Camera Scanner -->
             <div class="bg-black/50 p-4 rounded-2xl border border-white/10 space-y-3">
-                <p class="text-xs font-bold uppercase tracking-wider text-gray-300">Option 1: Camera QR Scan</p>
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Option 1: Camera QR Scan</p>
                 <div id="reader" class="overflow-hidden rounded-xl border border-white/10"></div>
             </div>
 
+            <!-- Option 2: Manual Ticket Code Input -->
             <div class="bg-black/50 p-4 rounded-2xl border border-white/10 space-y-3">
                 <p class="text-xs font-bold uppercase tracking-wider text-gray-300">Option 2: Enter Ticket ID</p>
                 <div class="flex gap-2">
-                    <input type="text" id="scanInput" placeholder="e.g. UNH-123456-1" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none text-sm text-white text-center font-mono uppercase">
-                    <button onclick="processScan(document.getElementById('scanInput').value)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase px-4 py-3 rounded-xl transition text-xs shadow-lg">Verify</button>
+                    <input type="text" id="scanInput" placeholder="e.g. UNH-123456-1" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white text-center font-mono uppercase">
+                    <button onclick="processScan(document.getElementById('scanInput').value)" class="bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase px-4 py-3 rounded-xl transition text-xs shadow-lg">Verify</button>
                 </div>
             </div>
 
+            <!-- Validation Result Notification -->
             <div id="scanResultCard" class="hidden p-5 rounded-2xl border text-center space-y-2">
                 <h3 id="scanResultTitle" class="font-black text-lg"></h3>
-                <p id="scanResultDesc" class="text-xs"></p>
+                <p id="scanResultDesc" class="text-xs leading-relaxed"></p>
             </div>
         </section>
     </main>
 
-    <footer class="bg-black/80 border-t border-white/10 py-6 text-center text-xs text-gray-500">
-        <p class="font-bold tracking-widest uppercase text-red-500/90">Powered by The Ambassadors</p>
+    <!-- Footer -->
+    <footer class="bg-black/80 border-t border-white/10 py-5 text-center text-xs text-gray-500">
+        <p class="font-bold tracking-widest uppercase text-amber-500/90">The Department • Gate Validation System</p>
     </footer>
 
     <!-- Firebase SDKs -->
@@ -102,15 +108,35 @@
             const keys = Object.keys(cachedTickets);
             const foundKey = keys.find(k => cachedTickets[k].id.toLowerCase() === code);
 
-            if (!code) { card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1 mt-4"; title.innerText = "⚠️ EMPTY CODE"; desc.innerText = "Please enter or scan a valid ticket code."; return; }
-            if (!foundKey) { card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4"; title.innerText = "❌ INVALID TICKET CODE"; desc.innerText = `Code "${code}" does not exist in the database.`; return; }
+            if (!code) { 
+                card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1"; 
+                title.innerText = "⚠️ EMPTY CODE"; 
+                desc.innerText = "Please enter or scan a valid ticket code."; 
+                return; 
+            }
+            if (!foundKey) { 
+                card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1"; 
+                title.innerText = "❌ INVALID TICKET CODE"; 
+                desc.innerText = `Code "${code}" does not exist in the database.`; 
+                return; 
+            }
             
             const ticket = cachedTickets[foundKey];
-            if (ticket.status === 'Pending') { card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1 mt-4"; title.innerText = "⚠️ PAYMENT PENDING"; desc.innerText = `Ticket belongs to ${ticket.name}, but admin has not approved payment yet!`; } 
-            else if (ticket.status === 'Checked-In') { card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1 mt-4"; title.innerText = "🚨 ALREADY USED (DUPLICATE ENTRY)"; desc.innerText = `Ticket ${ticket.id} for ${ticket.name} was already scanned and checked in!`; } 
+            if (ticket.status === 'Pending') { 
+                card.className = "p-5 rounded-2xl border bg-amber-950/80 border-amber-500/50 text-amber-200 text-center space-y-1"; 
+                title.innerText = "⚠️ PAYMENT PENDING"; 
+                desc.innerText = `Ticket belongs to ${ticket.name}, but admin has not approved payment yet!`; 
+            } 
+            else if (ticket.status === 'Checked-In') { 
+                card.className = "p-5 rounded-2xl border bg-red-950/80 border-red-500/50 text-red-200 text-center space-y-1"; 
+                title.innerText = "🚨 ALREADY USED (DUPLICATE ENTRY)"; 
+                desc.innerText = `Ticket ${ticket.id} for ${ticket.name} was already scanned and checked in!`; 
+            } 
             else {
                 db.ref('tickets/' + foundKey).update({ status: 'Checked-In' });
-                card.className = "p-5 rounded-2xl border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 text-center space-y-1 mt-4"; title.innerText = "✅ ACCESS GRANTED"; desc.innerText = `Welcome ${ticket.name} (${ticket.tierName})! Entry verified successfully.`;
+                card.className = "p-5 rounded-2xl border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 text-center space-y-1"; 
+                title.innerText = "✅ ACCESS GRANTED"; 
+                desc.innerText = `Welcome ${ticket.name} (${ticket.tierName})! Entry verified successfully.`;
             }
             document.getElementById('scanInput').value = '';
         }
