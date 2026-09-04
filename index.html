@@ -9,17 +9,13 @@
     <style>
         .party-bg {
             background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('IMG-20260830-WA0074.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-size: cover; background-position: center; background-attachment: fixed;
         }
         @keyframes pulseGlow {
             0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); }
             50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); }
         }
-        .hero-glow {
-            animation: pulseGlow 3s infinite;
-        }
+        .hero-glow { animation: pulseGlow 3s infinite; }
     </style>
 </head>
 <body class="party-bg min-h-screen text-white font-sans flex flex-col justify-between selection:bg-amber-500 selection:text-black">
@@ -39,6 +35,7 @@
     <main class="max-w-4xl mx-auto px-4 py-10 w-full flex-grow flex items-center justify-center">
         <section class="w-full max-w-lg bg-black/90 backdrop-blur-xl border border-amber-500/40 p-6 sm:p-8 rounded-3xl shadow-2xl hero-glow space-y-6">
             
+            <!-- Official Flyer Preview -->
             <div class="relative rounded-2xl overflow-hidden border border-amber-500/40 shadow-2xl group">
                 <img src="IMG-20260830-WA0074.jpg" alt="UNHINGED Official Flyer" class="w-full object-cover rounded-2xl transform group-hover:scale-105 transition duration-500">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-4 justify-between">
@@ -58,6 +55,7 @@
                 </div>
             </div>
 
+            <!-- Payment Details -->
             <div class="bg-gradient-to-br from-amber-950/40 via-black to-black border border-amber-500/30 p-4 rounded-2xl space-y-3 shadow-inner">
                 <div class="text-center text-xs text-amber-400 font-bold uppercase tracking-wider flex items-center justify-center space-x-1">
                     <span>💳 Transfer Exactly</span>
@@ -78,34 +76,40 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 pt-1">
-                    <button type="button" onclick="openApp('OPay')" class="bg-emerald-600/90 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1.5">
-                        <span>🟢 Open OPay</span>
-                    </button>
-                    <button type="button" onclick="openApp('PalmPay')" class="bg-blue-600/90 hover:bg-blue-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow flex items-center justify-center space-x-1.5">
-                        <span>🔵 Open PalmPay</span>
-                    </button>
+                    <button type="button" onclick="openApp('OPay')" class="bg-emerald-600/90 hover:bg-emerald-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow">🟢 Open OPay</button>
+                    <button type="button" onclick="openApp('PalmPay')" class="bg-blue-600/90 hover:bg-blue-600 text-white text-center py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow">🔵 Open PalmPay</button>
                 </div>
             </div>
 
+            <!-- Booking Form -->
             <form id="ticketForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                
+                <!-- Discount Progress Bar (Hidden initially) -->
+                <div id="discountTracker" class="hidden bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider p-2 rounded-lg text-center animate-pulse">
+                    Calculating discount ticket availability...
+                </div>
+
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Full Name *</label>
-                    <input type="text" id="name" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500 transition" placeholder="e.g. Oluwaseun Adebayo">
+                    <input type="text" id="name" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500" placeholder="e.g. Oluwaseun Adebayo">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Email Address * <span class="text-[10px] text-amber-400">(Your ticket pass goes here)</span></label>
-                    <input type="email" id="email" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500 transition" placeholder="seun@example.com">
+                    <input type="email" id="email" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500" placeholder="seun@example.com">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">WhatsApp / Phone Number *</label>
-                    <input type="tel" id="phone" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500 transition" placeholder="08012345678">
+                    <input type="tel" id="phone" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500" placeholder="08012345678">
                 </div>
+                
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Ticket Tier *</label>
-                        <select id="tier" onchange="updateTotal()" required class="w-full px-3 py-3 bg-zinc-900 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-xs text-white font-medium">
-                            <option value="10000">Finalist (₦10,000)</option>
-                            <option value="5000">Other Lvls - EarlyBird (₦5,000)</option>
+                        <select id="tier" onchange="updateTotal()" required class="w-full px-3 py-3 bg-zinc-900 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-[11px] text-white font-medium">
+                            <option value="10000">Finalist (₦10k)</option>
+                            <option value="5000">Other Lvls - EarlyBird (₦5k)</option>
+                            <option value="8000" id="opt-rush" class="text-amber-400 font-bold">⚡ Rush Hour (₦8k)</option>
+                            <option value="15000" id="opt-paddy" class="text-amber-400 font-bold">🧑‍🤝‍🧑 Me & My Paddy (₦15k / 2 Passes)</option>
                         </select>
                     </div>
                     <div>
@@ -114,14 +118,33 @@
                     </div>
                 </div>
 
-                <div class="bg-white/5 p-3.5 rounded-xl border border-white/10 flex justify-between items-center text-sm shadow-inner">
+                <!-- Dynamic Paddy Details Form (Hidden by default) -->
+                <div id="paddyDetails" class="hidden space-y-3 bg-gradient-to-br from-amber-500/10 to-transparent p-4 rounded-xl border border-amber-500/40 mt-4 transition-all">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="text-lg">🧑‍🤝‍🧑</span>
+                        <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Your Paddy's Details (Ticket 2)</h3>
+                    </div>
+                    <p class="text-[10px] text-gray-400 leading-tight mb-2">We need this so we can generate a separate, unique gate pass for your plus-one!</p>
+                    
+                    <div>
+                        <input type="text" id="pName" class="w-full px-4 py-2.5 bg-black/50 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-xs text-white placeholder-gray-500" placeholder="Paddy's Full Name *">
+                    </div>
+                    <div>
+                        <input type="email" id="pEmail" class="w-full px-4 py-2.5 bg-black/50 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-xs text-white placeholder-gray-500" placeholder="Paddy's Email Address *">
+                    </div>
+                    <div>
+                        <input type="tel" id="pPhone" class="w-full px-4 py-2.5 bg-black/50 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-xs text-white placeholder-gray-500" placeholder="Paddy's Phone Number *">
+                    </div>
+                </div>
+
+                <div class="bg-white/5 p-3.5 rounded-xl border border-white/10 flex justify-between items-center text-sm shadow-inner mt-4">
                     <span class="text-gray-400 font-semibold">Total Payable:</span>
                     <span id="totalDisplay" class="text-emerald-400 font-black text-lg">₦10,000</span>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Transfer Sender Name / Reference *</label>
-                    <input type="text" id="reference" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500 transition" placeholder="Exact name used on bank app">
+                    <input type="text" id="reference" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm text-white placeholder-gray-500" placeholder="Exact name used on bank app">
                 </div>
 
                 <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black tracking-wider uppercase py-4 rounded-xl transition text-sm shadow-xl shadow-amber-950/50 transform active:scale-[0.98]">
@@ -129,15 +152,13 @@
                 </button>
             </form>
 
-            <div id="successMessage" class="hidden mt-6 bg-emerald-950/85 border border-emerald-500/50 p-6 rounded-2xl text-emerald-200 text-center space-y-3 shadow-2xl animate-fade-in">
+            <div id="successMessage" class="hidden mt-6 bg-emerald-950/85 border border-emerald-500/50 p-6 rounded-2xl text-emerald-200 text-center space-y-3 shadow-2xl">
                 <div class="text-3xl">🎉</div>
-                <h3 class="font-black text-xl text-emerald-400">Payment Logged Successfully!</h3>
+                <h3 class="font-black text-xl text-emerald-400">Payment Logged!</h3>
                 <p class="text-xs leading-relaxed text-gray-300">
-                    Thank you! Our team is verifying your transfer. Once confirmed, your secure QR entry pass will be emailed to you instantly.
+                    Thank you! Our team is verifying your transfer. Once confirmed, your secure QR entry pass(es) will be emailed to you instantly.
                 </p>
-                <button onclick="location.reload()" class="bg-white/10 hover:bg-white/20 text-xs font-bold px-4 py-2 rounded-xl transition text-white uppercase tracking-wider">
-                    Book Another Ticket
-                </button>
+                <button onclick="location.reload()" class="bg-white/10 hover:bg-white/20 text-xs font-bold px-4 py-2 rounded-xl transition text-white uppercase tracking-wider">Book Another Ticket</button>
             </div>
         </section>
     </main>
@@ -147,6 +168,7 @@
         <p class="font-bold tracking-widest uppercase text-amber-500 pt-1">The Department • One Night • One Vibe • One History</p>
     </footer>
 
+    <!-- Firebase SDKs & Frontend Logic -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
@@ -162,6 +184,45 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        let discountTicketsSold = 0;
+        const DISCOUNT_LIMIT = 30;
+
+        // Monitor Inventory Live on Load
+        db.ref('tickets').on('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            let count = 0;
+            Object.values(data).forEach(t => {
+                if (t.tierName.includes('Rush Hour') || t.tierName.includes('Paddy')) {
+                    count++; 
+                }
+            });
+            discountTicketsSold = count;
+            
+            const tracker = document.getElementById('discountTracker');
+            const remaining = Math.max(0, DISCOUNT_LIMIT - discountTicketsSold);
+            
+            tracker.classList.remove('hidden');
+            if (remaining > 0) {
+                tracker.innerText = `🔥 Hurry! Only ${remaining} Discount Tickets Left!`;
+            } else {
+                tracker.className = "bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold uppercase tracking-wider p-2 rounded-lg text-center";
+                tracker.innerText = "❌ Discount Tickets are Officially SOLD OUT!";
+                
+                // Disable options
+                const rushOpt = document.getElementById('opt-rush');
+                const paddyOpt = document.getElementById('opt-paddy');
+                if(rushOpt) { rushOpt.disabled = true; rushOpt.innerText = "Rush Hour (Sold Out)"; }
+                if(paddyOpt) { paddyOpt.disabled = true; paddyOpt.innerText = "Me & My Paddy (Sold Out)"; }
+
+                // Fallback to regular if they have a sold-out tier currently selected
+                const currentVal = document.getElementById('tier').value;
+                if(currentVal == "8000" || currentVal == "15000") {
+                    document.getElementById('tier').value = "10000";
+                    updateTotal();
+                }
+            }
+        });
+
         function copyAccount() {
             navigator.clipboard.writeText("8134250825");
             alert("✓ Account number (8134250825) copied to clipboard!");
@@ -172,15 +233,48 @@
             if(appName === 'OPay') { window.location.href = "https://www.opayweb.com"; } 
             else { window.location.href = "https://palmpay.com"; }
         }
+
         function updateTotal() {
-            const price = parseInt(document.getElementById('tier').value);
-            const qty = parseInt(document.getElementById('qty').value) || 1;
+            const tierSelect = document.getElementById('tier');
+            const price = parseInt(tierSelect.value);
+            const qtyInput = document.getElementById('qty');
+            const paddyBox = document.getElementById('paddyDetails');
+
+            // Handle Paddy Setup
+            if (price === 15000) {
+                paddyBox.classList.remove('hidden');
+                document.getElementById('pName').required = true;
+                document.getElementById('pEmail').required = true;
+                document.getElementById('pPhone').required = true;
+                qtyInput.value = 1;
+                qtyInput.disabled = true; // Lock quantity to 1 Bundle (2 passes) to keep logic clean
+            } else {
+                paddyBox.classList.add('hidden');
+                document.getElementById('pName').required = false;
+                document.getElementById('pEmail').required = false;
+                document.getElementById('pPhone').required = false;
+                qtyInput.disabled = false;
+            }
+
+            const qty = parseInt(qtyInput.value) || 1;
             const total = price * qty;
             document.getElementById('totalDisplay').innerText = '₦' + total.toLocaleString();
             document.getElementById('paymentAmountText').innerText = '₦' + total.toLocaleString();
         }
+
         function handleFormSubmit(e) {
             e.preventDefault();
+            const price = parseInt(document.getElementById('tier').value);
+            const qty = parseInt(document.getElementById('qty').value) || 1;
+            
+            // Final pre-submit inventory verification
+            if (price === 8000 && (discountTicketsSold + qty > DISCOUNT_LIMIT)) {
+                alert(`Not enough Rush Hour tickets left! Only ${Math.max(0, DISCOUNT_LIMIT - discountTicketsSold)} remaining.`); return;
+            }
+            if (price === 15000 && (discountTicketsSold + 2 > DISCOUNT_LIMIT)) {
+                alert(`Not enough discount tickets left for a Paddy Bundle!`); return;
+            }
+
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.innerText = "Submitting Booking...";
@@ -188,24 +282,39 @@
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
-            const price = parseInt(document.getElementById('tier').value);
-            const tierName = price === 10000 ? 'Finalist (₦10k)' : 'Other Lvls - EarlyBird (₦5k)';
-            const qty = parseInt(document.getElementById('qty').value);
             const reference = document.getElementById('reference').value;
-
             const batchId = 'UNH-' + Math.floor(100000 + Math.random() * 900000);
             
             let promises = [];
-            for(let i = 1; i <= qty; i++) {
-                const ticketId = batchId + '-' + i;
-                const ticketData = {
-                    id: ticketId,
-                    name, email, phone, tierName, price, reference,
-                    status: 'Pending',
-                    emailSent: false,
-                    date: new Date().toLocaleDateString()
-                };
-                promises.push(db.ref('tickets/' + ticketId).set(ticketData));
+
+            // ME & MY PADDY LOGIC (Generates 2 Tickets)
+            if (price === 15000) {
+                // Main Buyer (Ticket 1) - Stores the full 15k for revenue calc
+                promises.push(db.ref('tickets/' + batchId + '-1').set({
+                    id: batchId + '-1', name, email, phone, tierName: 'Me & My Paddy (Ticket 1 of 2)', price: 15000, reference, status: 'Pending', emailSent: false, date: new Date().toLocaleDateString()
+                }));
+                // The Paddy (Ticket 2) - Stores 0 price so revenue isn't doubled
+                promises.push(db.ref('tickets/' + batchId + '-2').set({
+                    id: batchId + '-2', 
+                    name: document.getElementById('pName').value, 
+                    email: document.getElementById('pEmail').value, 
+                    phone: document.getElementById('pPhone').value, 
+                    tierName: 'Me & My Paddy (Ticket 2 of 2)', price: 0, reference: reference + " (Paddy)", status: 'Pending', emailSent: false, date: new Date().toLocaleDateString()
+                }));
+            } 
+            // STANDARD / RUSH HOUR LOGIC
+            else {
+                let tierName = "";
+                if(price === 10000) tierName = 'Finalist (₦10k)';
+                if(price === 5000) tierName = 'Other Lvls - EarlyBird (₦5k)';
+                if(price === 8000) tierName = '⚡ Rush Hour (₦8k)';
+
+                for(let i = 1; i <= qty; i++) {
+                    const ticketId = batchId + '-' + i;
+                    promises.push(db.ref('tickets/' + ticketId).set({
+                        id: ticketId, name, email, phone, tierName, price, reference, status: 'Pending', emailSent: false, date: new Date().toLocaleDateString()
+                    }));
+                }
             }
 
             Promise.all(promises).then(() => {
