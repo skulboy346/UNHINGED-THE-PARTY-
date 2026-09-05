@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNHINGED — Admin Portal</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="IMG-20260830-WA0074.jpg">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() { emailjs.init("S35DUIrMpyDibKjLc"); })();
@@ -46,6 +45,18 @@
         </section>
 
         <section id="dashboardSection" class="hidden space-y-6">
+            
+            <!-- MASTER SALES CONTROL -->
+            <div class="bg-black/85 backdrop-blur-xl border border-amber-500/30 p-5 rounded-2xl shadow-2xl flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-black italic text-white">PORTAL STATUS</h2>
+                    <p id="salesStatusText" class="text-xs text-emerald-400 font-bold uppercase mt-0.5">● SALES ARE LIVE</p>
+                </div>
+                <button id="toggleSalesBtn" onclick="toggleSales()" class="bg-red-600 hover:bg-red-500 text-white font-bold uppercase px-4 py-2 rounded-xl transition text-xs shadow-lg">
+                    🛑 Close Sales
+                </button>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-black/80 border border-white/10 p-5 rounded-2xl">
                     <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Total Revenue</p>
@@ -120,6 +131,7 @@
         const db = firebase.database();
 
         let cachedTickets = {};
+        let isSalesOpen = true;
 
         function handleAdminLogin(e) {
             e.preventDefault();
@@ -131,10 +143,44 @@
         }
 
         function initRealtimeSync() {
+            // Sync Tickets
             db.ref('tickets').on('value', (snapshot) => {
                 cachedTickets = snapshot.val() || {};
                 renderAdminTable();
             });
+
+            // Sync Sales Control
+            db.ref('settings/salesOpen').on('value', (snapshot) => {
+                if(snapshot.exists()) {
+                    isSalesOpen = snapshot.val();
+                } else {
+                    isSalesOpen = true; // default open
+                }
+                updateSalesUI();
+            });
+        }
+
+        function updateSalesUI() {
+            const btn = document.getElementById('toggleSalesBtn');
+            const txt = document.getElementById('salesStatusText');
+            if(isSalesOpen) {
+                btn.innerText = "🛑 Close Sales";
+                btn.className = "bg-red-600 hover:bg-red-500 text-white font-bold uppercase px-4 py-2 rounded-xl transition text-xs shadow-lg";
+                txt.innerText = "● SALES ARE LIVE";
+                txt.className = "text-xs text-emerald-400 font-bold uppercase mt-0.5 animate-pulse";
+            } else {
+                btn.innerText = "✅ Re-Open Sales";
+                btn.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase px-4 py-2 rounded-xl transition text-xs shadow-lg";
+                txt.innerText = "● SALES CLOSED (SOLD OUT)";
+                txt.className = "text-xs text-red-500 font-bold uppercase mt-0.5";
+            }
+        }
+
+        function toggleSales() {
+            const msg = isSalesOpen ? "Are you sure you want to CLOSE sales? Buyers won't see the payment form anymore." : "Are you sure you want to RE-OPEN ticket sales?";
+            if(confirm(msg)) {
+                db.ref('settings/salesOpen').set(!isSalesOpen);
+            }
         }
 
         function renderAdminTable() {
@@ -178,14 +224,9 @@
             });
         }
 
-        // --- NEW DELETE FUNCTION ---
         function deleteTicket(ticketId) {
-            if(confirm("Are you sure you want to permanently delete this unverified registration? This cannot be undone.")) {
-                db.ref('tickets/' + ticketId).remove().then(() => {
-                    alert("Ticket entry removed from registry.");
-                }).catch(err => {
-                    alert("Error deleting ticket: " + err.message);
-                });
+            if(confirm("Are you sure you want to permanently delete this unverified registration?")) {
+                db.ref('tickets/' + ticketId).remove().then(() => alert("Ticket entry removed."));
             }
         }
 
@@ -202,7 +243,7 @@
             })
             .then(function() {
                 db.ref('tickets/' + ticketId).update({ emailSent: true });
-                if(manualTrigger) { alert(`✅ Email successfully sent to ${t.email}!`); previewTicketPass(ticketId); }
+                if(manualTrigger) { alert(`✅ Email successfully sent!`); previewTicketPass(ticketId); }
             }, function(error) { if(manualTrigger) { alert("❌ Email failed to send."); } });
         }
 
@@ -223,7 +264,7 @@
             emailBtn.setAttribute('onclick', `sendEmailTicket('${ticketId}', true)`);
 
             const cleanPhone = t.phone.replace(/^0/, '234');
-            const waMsg = encodeURIComponent(`🔥 *UNHINGED: The Sign Out Party* 🔥\n\nHi ${t.name},\nYour ticket has been approved!\n\n🎟️ *Ticket ID:* ${t.id}\n📌 *Tier:* ${t.tierName}\n📅 *Date:* Sat, Sept 5th, 2026 (10 PM)\n📍 *Location:* Queens Str, Alagomeji, Lagos\n🍾 *Notice:* BYOB (Bring Your Own Bottle)\n\nShow this pass code at the entrance. See you there!`);
+            const waMsg = encodeURIComponent(`🔥 *UNHINGED: The Sign Out Party* 🔥\n\nHi ${t.name},\nYour ticket has been approved!\n\n🎟️ *Ticket ID:* ${t.id}\n📌 *Tier:* ${t.tierName}\n📅 *Date:* Sat, Sept 5th, 2026 (10 PM)\n📍 *Location:* Queens Str, Alagomeji, Lagos\n\nShow this pass code at the entrance. See you there!`);
             document.getElementById('modalWhatsappBtn').setAttribute('onclick', `window.open('https://wa.me/${cleanPhone}?text=${waMsg}', '_blank')`);
             document.getElementById('ticketModal').classList.remove('hidden');
             document.getElementById('ticketModal').classList.add('flex');
